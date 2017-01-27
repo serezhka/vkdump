@@ -1,6 +1,9 @@
 package com.github.serezhka.vkdump.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @author Sergei Fedorov (serezhka@xakep.ru)
@@ -8,18 +11,19 @@ import javax.persistence.*;
 @SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class AbstractEntity {
+public abstract class AbstractEntity implements Serializable {
 
-    private Long id;
+    @JsonIgnore
+    private Integer id;
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = "id", nullable = false)
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 }

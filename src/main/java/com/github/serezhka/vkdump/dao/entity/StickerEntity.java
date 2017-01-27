@@ -11,8 +11,8 @@ import javax.persistence.Table;
 @Table(name = "sticker", schema = "vkdump")
 public class StickerEntity extends AbstractEntity {
 
-    private Long stickerId;
-    private Long productId;
+    private Integer stickerId;
+    private Integer productId;
     private String photo64;
     private String photo128;
     private String photo256;
@@ -21,20 +21,20 @@ public class StickerEntity extends AbstractEntity {
     private Integer height;
 
     @Column(name = "sticker_id")
-    public Long getStickerId() {
+    public Integer getStickerId() {
         return stickerId;
     }
 
-    public void setStickerId(Long stickerId) {
+    public void setStickerId(Integer stickerId) {
         this.stickerId = stickerId;
     }
 
     @Column(name = "product_id")
-    public Long getProductId() {
+    public Integer getProductId() {
         return productId;
     }
 
-    public void setProductId(Long productId) {
+    public void setProductId(Integer productId) {
         this.productId = productId;
     }
 

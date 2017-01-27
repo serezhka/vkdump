@@ -11,17 +11,17 @@ import javax.persistence.Table;
 @Table(name = "gift", schema = "vkdump")
 public class GiftEntity extends AbstractEntity {
 
-    public Long giftId;
+    public Integer giftId;
     public String thumb48;
     public String thumb96;
     public String thumb256;
 
     @Column(name = "gift_id")
-    public Long getGiftId() {
+    public Integer getGiftId() {
         return giftId;
     }
 
-    public void setGiftId(Long giftId) {
+    public void setGiftId(Integer giftId) {
         this.giftId = giftId;
     }
 

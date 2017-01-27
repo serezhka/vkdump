@@ -11,7 +11,7 @@ import javax.persistence.Table;
 @Table(name = "user", schema = "vkdump")
 public class UserEntity extends AbstractEntity {
 
-    private Long userId;
+    private Integer userId;
     private String firstName;
     private String lastName;
     private String photo200Orig;
@@ -19,11 +19,11 @@ public class UserEntity extends AbstractEntity {
     private Integer sex;
 
     @Column(name = "user_id")
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 

@@ -2,8 +2,6 @@ package com.github.serezhka.vkdump.service;
 
 import com.github.serezhka.vkdump.dao.AttachmentRepository;
 import com.github.serezhka.vkdump.dao.entity.AttachmentEntity;
-import com.github.serezhka.vkdump.dto.AttachmentDTO;
-import com.github.serezhka.vkdump.util.converter.EntityConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,12 +20,11 @@ public class AttachmentService {
         this.attachmentRepository = attachmentRepository;
     }
 
-    public Page<AttachmentDTO> getAttachments(String type, Pageable pageable) {
-        return attachmentRepository.findByTypeOrderByMessage_DateDesc(type, pageable).map(EntityConverter::attachmentEntityToDto);
+    public Page<AttachmentEntity> getAttachments(String type, Pageable pageable) {
+        return attachmentRepository.findByTypeOrderByMessage_DateDesc(type, pageable);
     }
 
-    public Page<AttachmentDTO> getAttachments(Long dialogId, String type, Pageable pageable) {
-        Page<AttachmentEntity> attachmentEntities = attachmentRepository.findByMessage_DialogIdAndType(dialogId, type, pageable);
-        return attachmentEntities.map(EntityConverter::attachmentEntityToDto);
+    public Page<AttachmentEntity> getAttachments(int dialogId, String type, Pageable pageable) {
+        return attachmentRepository.findByMessage_DialogIdAndType(dialogId, type, pageable);
     }
 }

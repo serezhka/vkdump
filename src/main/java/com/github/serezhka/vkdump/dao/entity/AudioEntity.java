@@ -12,29 +12,29 @@ import javax.persistence.Table;
 @Table(name = "audio", schema = "vkdump")
 public class AudioEntity extends AbstractEntity {
 
-    private Long audioId;
-    private Long ownerId;
+    private Integer audioId;
+    private Integer ownerId;
     private String artist;
     private String title;
     private Integer duration;
-    private Long date;
+    private Integer date;
     private String url;
 
     @Column(name = "audio_id")
-    public Long getAudioId() {
+    public Integer getAudioId() {
         return audioId;
     }
 
-    public void setAudioId(Long audioId) {
+    public void setAudioId(Integer audioId) {
         this.audioId = audioId;
     }
 
     @Column(name = "owner_id")
-    public Long getOwnerId() {
+    public Integer getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(Long ownerId) {
+    public void setOwnerId(Integer ownerId) {
         this.ownerId = ownerId;
     }
 
@@ -68,11 +68,11 @@ public class AudioEntity extends AbstractEntity {
     }
 
     @Column(name = "date")
-    public Long getDate() {
+    public Integer getDate() {
         return date;
     }
 
-    public void setDate(Long date) {
+    public void setDate(Integer date) {
         this.date = date;
     }
 

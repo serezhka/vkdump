@@ -1,6 +1,6 @@
 package com.github.serezhka.vkdump.controller;
 
-import com.github.serezhka.vkdump.dto.AttachmentDTO;
+import com.github.serezhka.vkdump.dao.entity.AttachmentEntity;
 import com.github.serezhka.vkdump.service.AttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,12 +27,12 @@ public class AttachmentController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String getAttachments(
-            @RequestParam(value = "dialog_id", required = false) Long dialogId,
+            @RequestParam(value = "dialogId", required = false) Integer dialogId,
             @RequestParam("type") String type,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
             Model model) {
-        Page<AttachmentDTO> attachments;
+        Page<AttachmentEntity> attachments;
         if (dialogId == null) {
             attachments = attachmentService.getAttachments(type, new PageRequest(page, size));
         } else {

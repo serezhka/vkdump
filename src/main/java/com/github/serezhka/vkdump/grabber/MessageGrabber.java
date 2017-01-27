@@ -1,116 +1,131 @@
 package com.github.serezhka.vkdump.grabber;
 
-import com.github.serezhka.vkdump.dto.ChatDTO;
-import com.github.serezhka.vkdump.dto.DialogDTO;
-import com.github.serezhka.vkdump.dto.MessageDTO;
-import com.github.serezhka.vkdump.dto.UserDTO;
 import com.github.serezhka.vkdump.service.MessageService;
 import com.github.serezhka.vkdump.service.UserService;
-import com.github.serezhka.vkdump.vkapi.MessagesApi;
-import com.github.serezhka.vkdump.vkapi.UsersApi;
+import com.github.serezhka.vkdump.util.converter.EntityConverter;
+import com.vk.api.sdk.client.VkApiClient;
+import com.vk.api.sdk.client.actors.UserActor;
+import com.vk.api.sdk.exceptions.ApiException;
+import com.vk.api.sdk.exceptions.ClientException;
+import com.vk.api.sdk.objects.messages.Dialog;
+import com.vk.api.sdk.objects.messages.Message;
+import com.vk.api.sdk.queries.users.UserField;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Sergei Fedorov (serezhka@xakep.ru)
  */
-@SuppressWarnings("Duplicates")
-@Service
+@Component
 public class MessageGrabber {
 
     private static final Logger LOGGER = Logger.getLogger(MessageGrabber.class);
 
-    private final UsersApi usersApi;
-    private final MessagesApi messagesApi;
-    private final UserService userService;
+    private final UserActor tokenOwner;
+    private final VkApiClient vkApiClient;
     private final MessageService messageService;
+    private final UserService userService;
 
     @Autowired
-    public MessageGrabber(UsersApi usersApi, MessagesApi messagesApi, UserService userService, MessageService messageService) {
-        this.usersApi = usersApi;
-        this.messagesApi = messagesApi;
-        this.userService = userService;
+    public MessageGrabber(UserActor tokenOwner,
+                          VkApiClient vkApiClient,
+                          MessageService messageService,
+                          UserService userService) {
+        this.tokenOwner = tokenOwner;
+        this.vkApiClient = vkApiClient;
         this.messageService = messageService;
+        this.userService = userService;
     }
 
-    public void grabDialogs() throws IOException {
 
-        long lastMessageDate = messageService.getLastMessageDate();
+    public void grabDialogs() throws ClientException, ApiException {
 
         // Save token owner info
-        userService.save(usersApi.getUser(0));
+        vkApiClient.users().get(tokenOwner).fields(UserField.PHOTO_200_ORIG).execute().stream()
+                .map(EntityConverter::userToEntity)
+                .forEach(userService::save);
 
+        // Get last message id
         int dialogsProcessed = 0;
-        GRABBER:
         while (true) {
 
-            List<DialogDTO> dialogs = messagesApi.getDialogs(dialogsProcessed, 200);
-            if (dialogs.size() == 0) break;
+            List<Dialog> dialogs = vkApiClient.messages().getDialogs(tokenOwner)
+                    .offset(dialogsProcessed)
+                    .count(200)
+                    .execute().getItems();
 
-            for (DialogDTO dialog : dialogs) {
-
-                if (dialog.message.getDate() < lastMessageDate) {
-                    LOGGER.info("No more new messages!");
-                    break GRABBER;
-                }
-
+            for (Dialog dialog : dialogs) {
                 LOGGER.info("Processing dialog " + dialogsProcessed++);
-
-                if (dialog.message.getChatId() == null) {
-                    processSimpleDialog(dialog.message);
+                if (dialog.getMessage().getChatId() == null) {
+                    processSimpleDialog(dialog.getMessage());
                 } else {
-                    processMultiDialog(dialog.message);
+                    processMultiDialog(dialog.getMessage());
                 }
             }
+
+            if (dialogs.size() < 200) break;
         }
     }
 
-    private void processSimpleDialog(MessageDTO lastMessage) throws IOException {
+    private void processSimpleDialog(Message lastMessage) throws ClientException, ApiException {
 
-        // Get last message date in dialog
-        long lastMessageDate = messageService.getLastMessageDateInDialog(lastMessage.getUserId());
+        // Get last message id in dialog
+        int lastMessageId = messageService.getLastMessageIdInDialog(lastMessage.getUserId());
 
         // There are no new messages
-        if (lastMessageDate == lastMessage.getDate()) return;
+        if (lastMessageId == lastMessage.getId()) return;
 
         // Save user info
-        userService.save(usersApi.getUser(lastMessage.getUserId()));
+        vkApiClient.users().get(tokenOwner).userIds(String.valueOf(lastMessage.getUserId())).fields(UserField.PHOTO_200_ORIG)
+                .execute().stream().map(EntityConverter::userToEntity).forEach(userService::save);
 
         int messagesProcessed = 0;
         while (true) {
-            List<MessageDTO> messages = messagesApi.getHistory(messagesProcessed, 200, lastMessage.getUserId());
+
+            List<Message> messages = vkApiClient.messages().getHistory(tokenOwner)
+                    .offset(messagesProcessed).count(200).userId(String.valueOf(lastMessage.getUserId())).execute().getItems();
+
             messagesProcessed += messages.size();
-            messages.removeIf(message -> message.getDate() <= lastMessageDate);
-            if (messages.size() == 0) break;
-            messageService.saveMessages(messages);
+            messages.removeIf(message -> message.getId() <= lastMessageId);
+
+            messageService.saveMessages(messages.stream().map(EntityConverter::messageToEntity).collect(Collectors.toList()));
+
+            if (messages.size() < 200) break;
         }
     }
 
-    private void processMultiDialog(MessageDTO lastMessage) throws IOException {
+    private void processMultiDialog(Message lastMessage) throws ClientException, ApiException {
 
         // Get last message date in dialog
-        long lastMessageDate = messageService.getLastMessageDateInDialog(2000000000 + lastMessage.getChatId()); // FIXME
+        long lastMessageId = messageService.getLastMessageIdInDialog(2000000000 + lastMessage.getChatId()); // FIXME
 
         // There are no new messages
-        if (lastMessageDate == lastMessage.getDate()) return;
+        if (lastMessageId == lastMessage.getId()) return;
 
         // Save users info
-        ChatDTO chat = messagesApi.getChat(lastMessage.getChatId());
-        for (UserDTO user : chat.getUsers()) {
-            userService.save(user);
-        }
+        // FIXME class GetChatUsersChatIdsFieldsResponse is not implemented
+        //vkApiClient.messages().getChatUsers(tokenOwner, Collections.singletonList(lastMessage.getChatId()), UserField.PHOTO_200_ORIG)
+        //        .execute().stream().map(EntityConverter::userToEntity).forEach(userService::save);
+
+        vkApiClient.users().get(tokenOwner).userIds(lastMessage.getChatActive().stream().map(String::valueOf).collect(Collectors.toList()))
+                .fields(UserField.PHOTO_200_ORIG).execute().stream().map(EntityConverter::userToEntity).forEach(userService::save);
 
         int messagesProcessed = 0;
         while (true) {
-            List<MessageDTO> messages = messagesApi.getHistory(messagesProcessed, 200, 2000000000 + lastMessage.getChatId()); // FIXME
+
+            List<Message> messages = vkApiClient.messages().getHistory(tokenOwner)
+                    .offset(messagesProcessed).count(200).userId(String.valueOf(2000000000 + lastMessage.getChatId())).execute().getItems();
+
             messagesProcessed += messages.size();
-            messages.removeIf(message -> message.getDate() <= lastMessageDate);
-            if (messages.size() == 0) break;
-            messageService.saveMessages(messages);
+            messages.removeIf(message -> message.getId() <= lastMessageId);
+
+            messageService.saveMessages(messages.stream().map(EntityConverter::messageToEntity).collect(Collectors.toList()));
+
+            if (messages.size() < 200) break;
         }
     }
 }

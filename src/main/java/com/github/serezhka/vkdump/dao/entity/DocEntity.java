@@ -2,7 +2,6 @@ package com.github.serezhka.vkdump.dao.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 
 /**
@@ -12,34 +11,33 @@ import javax.persistence.Table;
 @Table(name = "doc", schema = "vkdump")
 public class DocEntity extends AbstractEntity {
 
-    private Long docId;
-    private Long ownerId;
+    private Integer docId;
+    private Integer ownerId;
     private String title;
-    private Long size;
+    private Integer size;
     private String ext;
     private String url;
-    private Long date;
+    private Integer date;
     private Integer type;
 
     @Column(name = "doc_id")
-    public Long getDocId() {
+    public Integer getDocId() {
         return docId;
     }
 
-    public void setDocId(Long docId) {
+    public void setDocId(Integer docId) {
         this.docId = docId;
     }
 
     @Column(name = "owner_id")
-    public Long getOwnerId() {
+    public Integer getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(Long ownerId) {
+    public void setOwnerId(Integer ownerId) {
         this.ownerId = ownerId;
     }
 
-    @Lob
     @Column(name = "title")
     public String getTitle() {
         return title;
@@ -50,11 +48,11 @@ public class DocEntity extends AbstractEntity {
     }
 
     @Column(name = "size")
-    public Long getSize() {
+    public Integer getSize() {
         return size;
     }
 
-    public void setSize(Long size) {
+    public void setSize(Integer size) {
         this.size = size;
     }
 
@@ -77,11 +75,11 @@ public class DocEntity extends AbstractEntity {
     }
 
     @Column(name = "date")
-    public Long getDate() {
+    public Integer getDate() {
         return date;
     }
 
-    public void setDate(Long date) {
+    public void setDate(Integer date) {
         this.date = date;
     }
 

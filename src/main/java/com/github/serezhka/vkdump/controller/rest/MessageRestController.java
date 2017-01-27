@@ -1,8 +1,7 @@
 package com.github.serezhka.vkdump.controller.rest;
 
 import com.github.serezhka.vkdump.controller.rest.dto.JQueryDataTablesDTO;
-import com.github.serezhka.vkdump.dto.DialogDTO;
-import com.github.serezhka.vkdump.dto.MessageDTO;
+import com.github.serezhka.vkdump.dao.entity.MessageEntity;
 import com.github.serezhka.vkdump.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +26,7 @@ public class MessageRestController {
     }
 
     @RequestMapping(value = "/getDialogs", method = RequestMethod.GET)
-    public JQueryDataTablesDTO<DialogDTO> getDialogs(
+    public JQueryDataTablesDTO<MessageEntity> getDialogs(
             @RequestParam(value = "start") int start,
             @RequestParam(value = "length") int length,
             @RequestParam(value = "draw") int draw,
@@ -36,8 +35,8 @@ public class MessageRestController {
     }
 
     @RequestMapping(value = "/getMessages", method = RequestMethod.GET)
-    public JQueryDataTablesDTO<MessageDTO> getMessages(
-            @RequestParam(value = "dialog_id") long dialogId,
+    public JQueryDataTablesDTO<MessageEntity> getMessages(
+            @RequestParam(value = "dialogId") int dialogId,
             @RequestParam(value = "start") int start,
             @RequestParam(value = "length") int length,
             @RequestParam(value = "draw") int draw,

@@ -28,10 +28,10 @@ public class MessageController {
         return "dialogs";
     }
 
-    @RequestMapping(value = "/{dialog_id}", method = RequestMethod.GET)
-    public String getMessages(@PathVariable("dialog_id") long dialogId, Model model) {
+    @RequestMapping(value = "/{dialogId}", method = RequestMethod.GET)
+    public String getMessages(@PathVariable("dialogId") int dialogId, Model model) {
         model.addAttribute("users", userService.findAll());
-        model.addAttribute("dialog_id", dialogId);
+        model.addAttribute("dialogId", dialogId);
         return "messages";
     }
 }

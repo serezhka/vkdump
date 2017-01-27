@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 /**
  * @author Sergei Fedorov (serezhka@xakep.ru)
  */
-@SuppressWarnings("Duplicates")
 @SpringBootApplication
 public class Application {
 
@@ -25,7 +24,7 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-    //@Bean
+    @Bean
     public CommandLineRunner doIt() {
         return doIt -> messageGrabber.grabDialogs();
     }

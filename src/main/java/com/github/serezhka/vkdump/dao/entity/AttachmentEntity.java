@@ -1,5 +1,7 @@
 package com.github.serezhka.vkdump.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 /**
@@ -9,6 +11,7 @@ import javax.persistence.*;
 @Table(name = "attachment", schema = "vkdump")
 public class AttachmentEntity extends AbstractEntity {
 
+    @JsonIgnore
     private MessageEntity message;
 
     private String type;

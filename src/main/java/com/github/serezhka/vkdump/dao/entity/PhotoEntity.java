@@ -12,12 +12,12 @@ import javax.persistence.Table;
 @Table(name = "photo", schema = "vkdump")
 public class PhotoEntity extends AbstractEntity {
 
-    private Long photoId;
-    private Long albumId;
-    private Long ownerId;
-    private Long userId;
+    private Integer photoId;
+    private Integer albumId;
+    private Integer ownerId;
+    private Integer userId;
     private String text;
-    private Long date;
+    private Integer date;
     private String photo75;
     private String photo130;
     private String photo604;
@@ -28,38 +28,38 @@ public class PhotoEntity extends AbstractEntity {
     private Integer height;
 
     @Column(name = "photo_id")
-    public Long getPhotoId() {
+    public Integer getPhotoId() {
         return photoId;
     }
 
-    public void setPhotoId(Long photoId) {
+    public void setPhotoId(Integer photoId) {
         this.photoId = photoId;
     }
 
     @Column(name = "album_id")
-    public Long getAlbumId() {
+    public Integer getAlbumId() {
         return albumId;
     }
 
-    public void setAlbumId(Long albumId) {
+    public void setAlbumId(Integer albumId) {
         this.albumId = albumId;
     }
 
     @Column(name = "owner_id")
-    public Long getOwnerId() {
+    public Integer getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(Long ownerId) {
+    public void setOwnerId(Integer ownerId) {
         this.ownerId = ownerId;
     }
 
     @Column(name = "user_id")
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -74,11 +74,11 @@ public class PhotoEntity extends AbstractEntity {
     }
 
     @Column(name = "date")
-    public Long getDate() {
+    public Integer getDate() {
         return date;
     }
 
-    public void setDate(Long date) {
+    public void setDate(Integer date) {
         this.date = date;
     }
 

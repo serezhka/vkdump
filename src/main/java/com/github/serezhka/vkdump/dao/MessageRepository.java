@@ -6,25 +6,27 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author Sergei Fedorov (serezhka@xakep.ru)
  */
-public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
+@Repository
+public interface MessageRepository extends JpaRepository<MessageEntity, Integer> {
 
-    @Query("SELECT o FROM MessageEntity o WHERE o.date IN (SELECT MAX(e.date) FROM MessageEntity e WHERE e.messageId IS NOT NULL GROUP BY e.dialogId) ORDER BY o.date DESC")
+    @Query("SELECT o FROM MessageEntity o WHERE o.messageId IN (SELECT MAX(e.messageId) FROM MessageEntity e GROUP BY e.dialogId) ORDER BY o.messageId DESC")
     Page<MessageEntity> findLastMessagesInDialogs(Pageable pageable);
 
-    @Query("SELECT o FROM MessageEntity o WHERE o.date IN (SELECT MAX(e.date) FROM MessageEntity e WHERE e.messageId IS NOT NULL AND UPPER(e.body) LIKE UPPER(CONCAT('%',:search,'%')) GROUP BY e.dialogId) ORDER BY o.date DESC")
+    @Query("SELECT o FROM MessageEntity o WHERE o.messageId IN (SELECT MAX(e.messageId) FROM MessageEntity e WHERE UPPER(e.body) LIKE UPPER(CONCAT('%',:search,'%')) GROUP BY e.dialogId) ORDER BY o.messageId DESC")
     Page<MessageEntity> findInDialogs(@Param("search") String search, Pageable pageable);
 
-    Page<MessageEntity> findByDialogIdAndMessageIdIsNotNullOrderByDateDesc(long dialogId, Pageable pageable);
+    Page<MessageEntity> findByDialogIdAndMessageIdIsNotNullOrderByDateDesc(int dialogId, Pageable pageable);
 
-    Page<MessageEntity> findByDialogIdAndBodyContainingIgnoreCaseAndMessageIdIsNotNullOrderByDateDesc(Long userId, String body, Pageable pageable);
+    Page<MessageEntity> findByDialogIdAndBodyContainingIgnoreCaseAndMessageIdIsNotNullOrderByDateDesc(Integer userId, String body, Pageable pageable);
 
-    @Query("SELECT MAX(o.date) FROM MessageEntity o")
-    Long findLastMessageDate();
+    @Query("SELECT COALESCE(MAX(o.messageId), 0) FROM MessageEntity o")
+    int findLastMessageId();
 
-    @Query("SELECT MAX(o.date) FROM MessageEntity o WHERE o.dialogId = :dialogId")
-    Long findLastMessageDate(@Param("dialogId") long dialogId);
+    @Query("SELECT COALESCE(MAX(o.messageId), 0) FROM MessageEntity o WHERE o.dialogId = :dialogId")
+    int findLastMessageId(@Param("dialogId") int dialogId);
 }

@@ -1,5 +1,7 @@
 package com.github.serezhka.vkdump.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -10,75 +12,76 @@ import java.util.List;
 @Table(name = "message", schema = "vkdump")
 public class MessageEntity extends AbstractEntity {
 
-    private Long messageId;
-    private Long fromId;
-    private Long dialogId;
-    private Long date;
-    private Integer readState;
-    private Integer out;
+    private Integer messageId;
+    private Integer fromId;
+    private Integer dialogId;
+    private Integer date;
+    private Boolean readState;
+    private Boolean out;
     private String body;
 
+    @JsonIgnore
     private MessageEntity parentMessage;
+
     private List<MessageEntity> fwdMessages;
 
     private List<AttachmentEntity> attachments;
 
     @Column(name = "message_id")
-    public Long getMessageId() {
+    public Integer getMessageId() {
         return messageId;
     }
 
-    public void setMessageId(Long messageId) {
+    public void setMessageId(Integer messageId) {
         this.messageId = messageId;
     }
 
     @Column(name = "from_id")
-    public Long getFromId() {
+    public Integer getFromId() {
         return fromId;
     }
 
-    public void setFromId(Long fromId) {
+    public void setFromId(Integer fromId) {
         this.fromId = fromId;
     }
 
     @Column(name = "dialog_id")
-    public Long getDialogId() {
+    public Integer getDialogId() {
         return dialogId;
     }
 
-    public void setDialogId(Long dialogId) {
+    public void setDialogId(Integer dialogId) {
         this.dialogId = dialogId;
     }
 
     @Column(name = "date")
-    public Long getDate() {
+    public Integer getDate() {
         return date;
     }
 
-    public void setDate(Long date) {
+    public void setDate(Integer date) {
         this.date = date;
     }
 
     @Column(name = "read_state")
-    public Integer getReadState() {
+    public Boolean getReadState() {
         return readState;
     }
 
-    public void setReadState(Integer readState) {
+    public void setReadState(Boolean readState) {
         this.readState = readState;
     }
 
     @Column(name = "out")
-    public Integer getOut() {
+    public Boolean getOut() {
         return out;
     }
 
-    public void setOut(Integer out) {
+    public void setOut(Boolean out) {
         this.out = out;
     }
 
-    @Lob
-    @Column(name = "body")
+    @Column(name = "body", length = 4096)
     public String getBody() {
         return body;
     }
