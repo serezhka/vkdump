@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<%--@elvariable id="users" type="java.util.List<com.github.serezhka.vkdump.dto.UserDTO>"--%>
+<%--@elvariable id="users" type="java.util.List<com.github.serezhka.vkdump.dao.entity.UserEntity>"--%>
 
 <script type="text/javascript">
 
@@ -10,7 +10,7 @@
         <c:forEach items="${users}" var="user">
         <c:set var="firstName" value="${fn:replace(user.firstName, \"'\", \"\")}"/>
         <c:set var="lastName" value="${fn:replace(user.lastName, \"'\", \"\")}"/>
-        '${user.id}': {
+        '${user.userId}': {
             'firstName': '${firstName}',
             'lastName': '${lastName}',
             'photo200Orig': '${user.photo200Orig}'

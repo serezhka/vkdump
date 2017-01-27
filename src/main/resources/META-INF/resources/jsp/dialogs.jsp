@@ -15,18 +15,18 @@
             "ajax": "/getDialogs",
             "columns": [
                 {
-                    "data": "message.user_id",
-                    "render": function (userId) {
-                        if (userId && users[userId]) {
-                            var user = users[userId];
+                    "data": "dialogId",
+                    "render": function (dialogId) {
+                        if (dialogId < 2000000000 && users[dialogId]) {
+                            var user = users[dialogId];
                             return '<img src="' + user.photo200Orig + '" width="32" height="32"><br>' + user.firstName + ' ' + user.lastName;
                         } else
                             return 'Chat';
                     }
                 },
-                {"data": "message.body"},
+                {"data": "body"},
                 {
-                    "data": "message.date",
+                    "data": "date",
                     "render": function (date) {
                         return timeConverter(date);
                     }
@@ -34,13 +34,13 @@
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        return '<a href="/messages/' + (row.message.user_id ? row.message.user_id : 2000000000 + row.message.chat_id) + '">View dialog</a>';
+                        return '<a href="/messages/' + row.dialogId + '">View dialog</a>';
                     }
                 },
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        return '<a href="/attachments?dialog_id=' + (row.message.user_id ? row.message.user_id : 2000000000 + row.message.chat_id) + '&type=photo&page=0&size=500">Photos</a>';
+                        return '<a href="/attachments?dialogId=' + row.dialogId + '&type=photo&page=0&size=500">Photos</a>';
                     }
                 }
             ]

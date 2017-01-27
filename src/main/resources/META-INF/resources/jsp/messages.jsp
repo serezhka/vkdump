@@ -7,7 +7,7 @@
 
 <jsp:include page="users.jsp"/>
 
-<%--@elvariable id="dialog_id" type="java.lang.Long"--%>
+<%--@elvariable id="dialogId" type="java.lang.Integer"--%>
 
 <script type="text/javascript">
 
@@ -19,13 +19,13 @@
                 "url": "/getMessages",
                 "data": function (d) {
                     return $.extend({}, d, {
-                        "dialog_id": ${dialog_id}
+                        "dialogId": ${dialogId}
                     });
                 }
             },
             "columns": [
                 {
-                    "data": "from_id",
+                    "data": "fromId",
                     "render": function (fromId) {
                         if (fromId && users[fromId]) {
                             var user = users[fromId];
@@ -50,8 +50,11 @@
                             row.attachments.forEach(function (attachment) {
                                 switch (attachment.type) {
                                     case 'photo':
-                                        resultHtml += '<img src="' + attachment.photo.photo_130 + '" width="64" height="64">';
+                                        resultHtml += '<a href="' + attachment.photo.photo604 + '" target="_blank"><img src="' + attachment.photo.photo130 + '" width="64" height="64">';
                                         break;
+                                    default:
+                                        resultHtml += attachment.type + ', ';
+                                        break
                                 }
                             });
                             return resultHtml;
@@ -60,9 +63,9 @@
                 }
             ],
             "createdRow": function (row, data) {
-                if (data.fwd_messages) {
+                if (data.fwdMessages && data.fwdMessages.length) {
                     var tableRow = table.row(row);
-                    tableRow.child(fwdMessagesTable(data.fwd_messages)).show();
+                    tableRow.child(fwdMessagesTable(data.fwdMessages)).show();
                 }
             }
         });
@@ -73,7 +76,11 @@
 
         fwdMessages.forEach(function (message) {
             table += '<tr>';
-            table += '<td><img src="' + users[message.user_id] + '" width="32" height="32"></td>';
+            if (users[message.fromId]) {
+                table += '<td><img src="' + users[message.fromId].photo200Orig + '" width="32" height="32"></td>';
+            } else {
+                table += '<td>0_o</td>';
+            }
             table += '<td>' + message.body + '</td>';
             table += '</tr>';
         });
