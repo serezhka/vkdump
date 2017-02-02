@@ -49,14 +49,18 @@ public class MessageGrabber {
                 .map(EntityConverter::userToEntity)
                 .forEach(userService::save);
 
-        // Get last message id
+        // Get last saved message id
+        int lastMessageId = messageService.getLastMessageId();
+
         int dialogsProcessed = 0;
         while (true) {
 
             List<Dialog> dialogs = vkApiClient.messages().getDialogs(tokenOwner)
                     .offset(dialogsProcessed)
-                    .count(200)
+                    .count(20)
                     .execute().getItems();
+
+            dialogs.removeIf(dialog -> dialog.getMessage().getId() <= lastMessageId);
 
             for (Dialog dialog : dialogs) {
                 LOGGER.info("Processing dialog " + dialogsProcessed++);
@@ -67,13 +71,13 @@ public class MessageGrabber {
                 }
             }
 
-            if (dialogs.size() < 200) break;
+            if (dialogs.size() < 20) break;
         }
     }
 
     private void processSimpleDialog(Message lastMessage) throws ClientException, ApiException {
 
-        // Get last message id in dialog
+        // Get last saved message id in dialog
         int lastMessageId = messageService.getLastMessageIdInDialog(lastMessage.getUserId());
 
         // There are no new messages
@@ -87,20 +91,20 @@ public class MessageGrabber {
         while (true) {
 
             List<Message> messages = vkApiClient.messages().getHistory(tokenOwner)
-                    .offset(messagesProcessed).count(200).userId(String.valueOf(lastMessage.getUserId())).execute().getItems();
+                    .offset(messagesProcessed).count(50).userId(String.valueOf(lastMessage.getUserId())).execute().getItems();
 
             messagesProcessed += messages.size();
             messages.removeIf(message -> message.getId() <= lastMessageId);
 
             messageService.saveMessages(messages.stream().map(EntityConverter::messageToEntity).collect(Collectors.toList()));
 
-            if (messages.size() < 200) break;
+            if (messages.size() < 50) break;
         }
     }
 
     private void processMultiDialog(Message lastMessage) throws ClientException, ApiException {
 
-        // Get last message date in dialog
+        // Get last saved message date in dialog
         long lastMessageId = messageService.getLastMessageIdInDialog(2000000000 + lastMessage.getChatId()); // FIXME
 
         // There are no new messages
@@ -118,14 +122,14 @@ public class MessageGrabber {
         while (true) {
 
             List<Message> messages = vkApiClient.messages().getHistory(tokenOwner)
-                    .offset(messagesProcessed).count(200).userId(String.valueOf(2000000000 + lastMessage.getChatId())).execute().getItems();
+                    .offset(messagesProcessed).count(50).userId(String.valueOf(2000000000 + lastMessage.getChatId())).execute().getItems();
 
             messagesProcessed += messages.size();
             messages.removeIf(message -> message.getId() <= lastMessageId);
 
             messageService.saveMessages(messages.stream().map(EntityConverter::messageToEntity).collect(Collectors.toList()));
 
-            if (messages.size() < 200) break;
+            if (messages.size() < 50) break;
         }
     }
 }
