@@ -6,8 +6,12 @@
     <title>VKDump | ${param.pageName}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="/css/jquery.dataTables.min.css">
-    <script src="/js/jquery-3.1.0.min.js"></script>
+    <link rel="stylesheet" href="/css/simplePagination.css">
+    <script src="/js/jquery-3.1.1.min.js"></script>
     <script src="/js/jquery.dataTables.min.js"></script>
+    <%-- https://datatables.net/plug-ins/pagination/input --%>
+    <script src="/js/jquery.dataTables.input.js"></script>
+    <script src="/js/jquery.simplePagination.js"></script>
     <script src="/js/vkdump.js"></script>
 </head>
 <body>

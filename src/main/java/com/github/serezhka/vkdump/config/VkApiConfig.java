@@ -41,8 +41,8 @@ public class VkApiConfig {
     @Value("${proxy.host:#{null}}")
     private String proxyHost;
 
-    @Value("${proxy.port}")
-    private int proxyPort;
+    @Value("${proxy.port:#{null}}")
+    private Integer proxyPort;
 
     @Value("${vk.api.id}")
     private int id;
@@ -70,7 +70,7 @@ public class VkApiConfig {
         RequestConfig requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
         clientBuilder.setDefaultRequestConfig(requestConfig);
 
-        if (proxyHost != null) {
+        if (proxyHost != null && proxyPort != null) {
             HttpHost proxy = new HttpHost(proxyHost, proxyPort);
             clientBuilder.setRoutePlanner(new DefaultProxyRoutePlanner(proxy));
         }

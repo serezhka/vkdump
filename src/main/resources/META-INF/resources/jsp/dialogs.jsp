@@ -12,6 +12,7 @@
         $('#dialogs').DataTable({
             "processing": true,
             "serverSide": true,
+            "pagingType": "input",
             "ajax": "/getDialogs",
             "columns": [
                 {
@@ -40,7 +41,7 @@
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        return '<a href="/attachments?dialogId=' + row.dialogId + '&type=photo&page=0&size=500">Photos</a>';
+                        return '<a href="/attachments?dialogId=' + row.dialogId + '&type=photo&size=1000&page=0">Photos</a>';
                     }
                 }
             ]

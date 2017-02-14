@@ -5,52 +5,21 @@
     <jsp:param name="pageName" value="Attachments"/>
 </jsp:include>
 
-<%--@elvariable id="attachments" type="org.springframework.data.domain.Page<com.github.serezhka.vkdump.dto.AttachmentDTO>"--%>
+<%--@elvariable id="attachments" type="org.springframework.data.domain.Page<com.github.serezhka.vkdump.dao.entity.AttachmentEntity>"--%>
 <c:forEach items="${attachments.content}" var="attachment">
 
-    <%--@elvariable id="attachment" type="com.github.serezhka.vkdump.dto.AttachmentDTO"--%>
+    <%--@elvariable id="attachment" type="com.github.serezhka.vkdump.dao.entity.AttachmentEntity"--%>
     <c:if test="${attachment.type eq 'photo'}">
+        <c:set var="photo" value="${attachment.photo}" scope="request"/>
+        <jsp:include page="single-photo.jsp"/>
+    </c:if>
 
-        <%--@elvariable id="photo" type="com.github.serezhka.vkdump.dto.PhotoDTO"--%>
-        <c:set var="photo" value="${attachment.photo}"/>
+    <c:if test="${attachment.type eq 'video'}">
 
-        <c:set var="smallLink" value="${photo.photo130}"/>
+        <%--@elvariable id="video" type="com.github.serezhka.vkdump.dao.entity.VideoEntity"--%>
+        <c:set var="video" value="${attachment.video}"/>
 
-        <%-- Select biggest and smallest source link --%>
-
-        <c:if test="${not empty photo.photo130}">
-            <c:set var="bigLink" value="${photo.photo130}"/>
-        </c:if>
-
-        <c:if test="${not empty photo.photo604}">
-            <c:if test="${empty smallLink}">
-                <c:set var="smallLink" value="${photo.photo604}"/>
-            </c:if>
-            <c:set var="bigLink" value="${photo.photo604}"/>
-        </c:if>
-
-        <c:if test="${not empty photo.photo807}">
-            <c:if test="${empty smallLink}">
-                <c:set var="smallLink" value="${photo.photo807}"/>
-            </c:if>
-            <c:set var="bigLink" value="${photo.photo807}"/>
-        </c:if>
-
-        <c:if test="${not empty photo.photo1280}">
-            <c:if test="${empty smallLink}">
-                <c:set var="smallLink" value="${photo.photo1280}"/>
-            </c:if>
-            <c:set var="bigLink" value="${photo.photo1280}"/>
-        </c:if>
-
-        <c:if test="${not empty photo.photo2560}">
-            <c:if test="${empty smallLink}">
-                <c:set var="smallLink" value="${photo.photo2560}"/>
-            </c:if>
-            <c:set var="bigLink" value="${photo.photo2560}"/>
-        </c:if>
-
-        <a href="${bigLink}" target="_blank"><img src="${smallLink}" width="128" height="128"></a>
+        <img src="${video.photo130}" width="128" height="128">
 
     </c:if>
 

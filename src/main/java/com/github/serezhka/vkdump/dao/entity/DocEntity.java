@@ -65,7 +65,7 @@ public class DocEntity extends AbstractEntity {
         this.ext = ext;
     }
 
-    @Column(name = "urk")
+    @Column(name = "url")
     public String getUrl() {
         return url;
     }

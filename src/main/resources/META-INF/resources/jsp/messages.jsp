@@ -15,6 +15,7 @@
         var table = $('#dialogs').DataTable({
             "processing": true,
             "serverSide": true,
+            "pagingType": "input",
             "ajax": {
                 "url": "/getMessages",
                 "data": function (d) {
@@ -50,11 +51,30 @@
                             row.attachments.forEach(function (attachment) {
                                 switch (attachment.type) {
                                     case 'photo':
-                                        resultHtml += '<a href="' + attachment.photo.photo604 + '" target="_blank"><img src="' + attachment.photo.photo130 + '" width="64" height="64">';
+                                        resultHtml += '<a href="' + attachment.photo.photo604 + '" target="_blank"><img src="' + attachment.photo.photo130 + '" width="64" height="64"></a>';
+                                        break;
+                                    case 'sticker':
+                                        resultHtml += '<img src="' + attachment.sticker.photo64 + '" width="64" height="64">';
+                                        break;
+                                    case 'gift':
+                                        resultHtml += '<img src="' + attachment.gift.thumb96 + '" width="64" height="64">';
+                                        break;
+                                    case 'audio':
+                                        resultHtml += '[audio: ' + attachment.audio.title + '], ';
+                                        break;
+                                    case 'doc':
+                                        switch (attachment.doc.type) {
+                                            case 5:
+                                                resultHtml += '<a href="' + attachment.doc.url + '" target="_blank">[voice]</a>';
+                                                break;
+                                            default:
+                                                resultHtml += '[doc: ' + attachment.doc.title + '], ';
+                                                break;
+                                        }
                                         break;
                                     default:
                                         resultHtml += attachment.type + ', ';
-                                        break
+                                        break;
                                 }
                             });
                             return resultHtml;
