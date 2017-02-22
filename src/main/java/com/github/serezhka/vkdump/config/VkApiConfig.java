@@ -66,7 +66,6 @@ public class VkApiConfig {
 
         HttpClientBuilder clientBuilder = HttpClients.custom();
         clientBuilder.setSSLSocketFactory(socketFactory);
-        /* RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout('\uea60').setConnectTimeout(5000).setConnectionRequestTimeout(5000).setCookieSpec("standard").build();*/
         RequestConfig requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
         clientBuilder.setDefaultRequestConfig(requestConfig);
 
@@ -82,7 +81,7 @@ public class VkApiConfig {
 
         BasicCookieStore cookieStore = new BasicCookieStore();
         clientBuilder.setDefaultCookieStore(cookieStore);
-        clientBuilder.setUserAgent("Java VK SDK/0.4.1");
+        clientBuilder.setUserAgent("Java VK SDK/0.4.3");
 
         clientBuilder.addInterceptorFirst(new HttpRequestInterceptor() {
 

@@ -29,14 +29,14 @@ public class AttachmentController {
     public String getAttachments(
             @RequestParam(value = "dialogId", required = false) Integer dialogId,
             @RequestParam("type") String type,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "1000") int size,
             Model model) {
         Page<AttachmentEntity> attachments;
         if (dialogId == null) {
-            attachments = attachmentService.getAttachments(type, new PageRequest(page, size));
+            attachments = attachmentService.getAttachments(type, new PageRequest(page - 1, size)); // jquery.simplePagination.js starts from "1"
         } else {
-            attachments = attachmentService.getAttachments(dialogId, type, new PageRequest(page, size));
+            attachments = attachmentService.getAttachments(dialogId, type, new PageRequest(page - 1, size)); // jquery.simplePagination.js starts from "1"
         }
         model.addAttribute("attachments", attachments);
         return "attachments";

@@ -5,6 +5,8 @@
     <jsp:param name="pageName" value="Attachments"/>
 </jsp:include>
 
+<div class="pages"></div>
+
 <%--@elvariable id="attachments" type="org.springframework.data.domain.Page<com.github.serezhka.vkdump.dao.entity.AttachmentEntity>"--%>
 <c:forEach items="${attachments.content}" var="attachment">
 
@@ -25,4 +27,28 @@
 
 </c:forEach>
 
+<div class="pages"></div>
+
 <jsp:include page="footer.jsp"/>
+
+<c:set var="page" value="${param.page}"/>
+<c:if test="${empty page}">
+    <c:set var="page" value="1"/>
+</c:if>
+
+<c:set var="size" value="${param.size}"/>
+<c:if test="${empty size}">
+    <c:set var="size" value="1000"/>
+</c:if>
+
+<script>
+    $(function () {
+        $(".pages").pagination({
+            currentPage: ${page},
+            itemsOnPage: ${size},
+            items: ${attachments.totalElements},
+            cssStyle: 'dark-theme',
+            hrefTextPrefix: "/attachments?type=${param.type}&size=${size}&page="
+        });
+    });
+</script>
