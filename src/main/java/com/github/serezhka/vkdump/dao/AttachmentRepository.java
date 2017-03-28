@@ -6,13 +6,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.stream.Stream;
+
 /**
  * @author Sergei Fedorov (serezhka@xakep.ru)
  */
 @Repository
 public interface AttachmentRepository extends JpaRepository<AttachmentEntity, Integer> {
 
-    Page<AttachmentEntity> findByType(String type, Pageable pageable);
+    Stream<AttachmentEntity> findByTypeOrderByMessage_DateDesc(String type);
 
     Page<AttachmentEntity> findByTypeOrderByMessage_DateDesc(String type, Pageable pageable);
 

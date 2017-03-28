@@ -34,6 +34,7 @@ public class EntityConverter {
         messageEntity.setDialogId(chatId != null ? 2000000000 + chatId : userId);
         messageEntity.setDate(message.getDate());
         messageEntity.setReadState(message.isReadState());
+        messageEntity.setTittle(message.getTitle());
         messageEntity.setOut(message.isOut());
         messageEntity.setBody(message.getBody());
 

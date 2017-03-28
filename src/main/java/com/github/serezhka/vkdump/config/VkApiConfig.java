@@ -59,7 +59,18 @@ public class VkApiConfig {
     }
 
     @Bean
-    public VkApiClient vkApiClient() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException, NoSuchFieldException, IllegalAccessException {
+    public VkApiClient vkApiClient(HttpClient httpClient) throws NoSuchFieldException, IllegalAccessException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+
+        TransportClient transportClient = HttpTransportClient.getInstance();
+        Field httpClientField = HttpTransportClient.class.getDeclaredField("httpClient");
+        httpClientField.setAccessible(true);
+        httpClientField.set(null, httpClient);
+
+        return new VkApiClient(transportClient);
+    }
+
+    @Bean
+    public HttpClient httpClient() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         SSLContextBuilder contextBuilder = new SSLContextBuilder();
         contextBuilder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
         SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(contextBuilder.build());
@@ -100,13 +111,6 @@ public class VkApiConfig {
             }
         });
 
-        HttpClient httpClientWithProxy = clientBuilder.build();
-
-        TransportClient transportClient = HttpTransportClient.getInstance();
-        Field httpClient = HttpTransportClient.class.getDeclaredField("httpClient");
-        httpClient.setAccessible(true);
-        httpClient.set(null, httpClientWithProxy);
-
-        return new VkApiClient(transportClient);
+        return clientBuilder.build();
     }
 }

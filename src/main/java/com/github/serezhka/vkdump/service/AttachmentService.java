@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Stream;
+
 /**
  * @author Sergei Fedorov (serezhka@xakep.ru)
  */
@@ -18,6 +20,10 @@ public class AttachmentService {
     @Autowired
     public AttachmentService(AttachmentRepository attachmentRepository) {
         this.attachmentRepository = attachmentRepository;
+    }
+
+    public Stream<AttachmentEntity> getAttachments(String type) {
+        return attachmentRepository.findByTypeOrderByMessage_DateDesc(type);
     }
 
     public Page<AttachmentEntity> getAttachments(String type, Pageable pageable) {

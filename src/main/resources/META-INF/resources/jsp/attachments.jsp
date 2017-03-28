@@ -21,7 +21,7 @@
         <%--@elvariable id="video" type="com.github.serezhka.vkdump.dao.entity.VideoEntity"--%>
         <c:set var="video" value="${attachment.video}"/>
 
-        <img src="${video.photo130}" width="128" height="128">
+        <a href="${video}" target="_blank"><img src="${video.photo130}" width="128" height="128"></a>
 
     </c:if>
 

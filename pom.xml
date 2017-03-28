@@ -21,8 +21,8 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <java.version>1.8</java.version>
-        <apache.httpclient.version>4.5.2</apache.httpclient.version>
-        <fasterxml.jackson.version>2.8.6</fasterxml.jackson.version>
+        <apache.httpclient.version>4.5.3</apache.httpclient.version>
+        <fasterxml.jackson.version>2.9.0.pr2</fasterxml.jackson.version>
         <vk.sdk.version>0.4.3</vk.sdk.version>
     </properties>
 

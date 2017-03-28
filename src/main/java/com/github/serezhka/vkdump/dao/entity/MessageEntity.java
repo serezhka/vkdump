@@ -17,6 +17,7 @@ public class MessageEntity extends AbstractEntity {
     private Integer dialogId;
     private Integer date;
     private Boolean readState;
+    private String tittle;
     private Boolean out;
     private String body;
 
@@ -70,6 +71,15 @@ public class MessageEntity extends AbstractEntity {
 
     public void setReadState(Boolean readState) {
         this.readState = readState;
+    }
+
+    @Column(name = "tittle")
+    public String getTittle() {
+        return tittle;
+    }
+
+    public void setTittle(String tittle) {
+        this.tittle = tittle;
     }
 
     @Column(name = "out")
