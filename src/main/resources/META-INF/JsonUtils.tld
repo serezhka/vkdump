@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" version="2.0">
+    <tlib-version>2.1</tlib-version>
+    <short-name>ju</short-name>
+    <uri>JsonUtils</uri>
+
+    <function>
+        <name>stringify</name>
+        <function-class>com.github.serezhka.vkdump.util.JsonUtils</function-class>
+        <function-signature>
+            java.lang.String stringify(java.lang.Object)
+        </function-signature>
+    </function>
+</taglib>

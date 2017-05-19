@@ -68,4 +68,29 @@ public class AttachmentsDownloader {
                     }
                 });
     }
+
+    @Transactional
+    public void downloadVoiceAttachments() throws IOException {
+        String path = "voice";
+        Files.createDirectory(Paths.get(path));
+        attachmentService.getAttachments("doc")
+                .parallel()
+                .forEach(attachment -> {
+                    if (attachment.getDoc().getExt().equalsIgnoreCase("ogg")) {
+                        try {
+                            HttpGet httpget = new HttpGet(attachment.getDoc().getUrl());
+                            HttpResponse response = httpClient.execute(httpget);
+                            HttpEntity entity = response.getEntity();
+                            if (entity != null) {
+                                try (FileOutputStream outstream = new FileOutputStream(".\\" + path + "\\" + attachment.getDoc().getDocId() + ".ogg")) {
+                                    System.out.println("Downloading " + attachment.getDoc().getDocId());
+                                    entity.writeTo(outstream);
+                                }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
 }

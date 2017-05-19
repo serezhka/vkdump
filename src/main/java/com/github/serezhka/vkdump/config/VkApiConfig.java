@@ -50,7 +50,7 @@ public class VkApiConfig {
     @Value("${vk.api.token}")
     private String token;
 
-    @Value("${vk.api.cooldown:500}")
+    @Value("${vk.api.cooldown:1000}")
     private int cooldown;
 
     @Bean
