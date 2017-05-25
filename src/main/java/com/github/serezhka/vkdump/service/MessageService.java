@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @author Sergei Fedorov (serezhka@xakep.ru)
@@ -22,6 +23,10 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
+    public Stream<MessageEntity> getDialogs(){
+        return messageRepository.findLastMessagesInDialogs();
+    }
+
     public Page<MessageEntity> getDialogs(Pageable pageable) {
         return messageRepository.findLastMessagesInDialogs(pageable);
     }
@@ -29,6 +34,10 @@ public class MessageService {
     public Page<MessageEntity> getDialogs(String search, Pageable pageable) {
         if (search == null || search.isEmpty()) return getDialogs(pageable);
         return messageRepository.findInDialogs(search, pageable);
+    }
+
+    public Stream<MessageEntity> getMessages(int dialogId) {
+        return messageRepository.findByDialogIdAndMessageIdIsNotNullOrderByDateDesc(dialogId);
     }
 
     public Page<MessageEntity> getMessages(int dialogId, Pageable pageable) {

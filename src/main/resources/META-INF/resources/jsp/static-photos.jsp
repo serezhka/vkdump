@@ -12,6 +12,8 @@
 </head>
 <body>
 
+<div class="pages"></div>
+
 <%--@elvariable id="dialogId" type="java.lang.Integer"--%>
 <%--@elvariable id="attachments" type="org.springframework.data.domain.Page<com.github.serezhka.vkdump.dao.entity.AttachmentEntity>"--%>
 <c:forEach items="${attachments.content}" var="attachment">
@@ -25,8 +27,6 @@
 
 <div class="pages"></div>
 
-<jsp:include page="footer.jsp"/>
-
 <c:set var="page" value="${param.page}"/>
 <c:if test="${empty page}">
     <c:set var="page" value="1"/>
@@ -34,7 +34,11 @@
 
 <c:set var="size" value="${param.size}"/>
 <c:if test="${empty size}">
-    <c:set var="size" value="100"/>
+    <c:set var="size" value="500"/>
+</c:if>
+
+<c:if test="${empty dialogId}">
+    <c:set var="dialogId" value=""/>
 </c:if>
 
 <script>
@@ -49,3 +53,5 @@
         });
     });
 </script>
+
+<jsp:include page="footer.jsp"/>

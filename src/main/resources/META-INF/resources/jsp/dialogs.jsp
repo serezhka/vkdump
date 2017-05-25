@@ -41,7 +41,7 @@
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        return '<a href="/attachments?dialogId=' + row.dialogId + '&type=photo&size=1000&page=0">Photos</a>';
+                        return '<a href="/attachments?dialogId=' + row.dialogId + '&type=photo&size=1000&page=1">Photos</a>';
                     }
                 }
             ]

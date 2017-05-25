@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.stream.Stream;
+
 /**
  * @author Sergei Fedorov (serezhka@xakep.ru)
  */
@@ -15,10 +17,15 @@ import org.springframework.stereotype.Repository;
 public interface MessageRepository extends JpaRepository<MessageEntity, Integer> {
 
     @Query("SELECT o FROM MessageEntity o WHERE o.messageId IN (SELECT MAX(e.messageId) FROM MessageEntity e GROUP BY e.dialogId) ORDER BY o.messageId DESC")
+    Stream<MessageEntity> findLastMessagesInDialogs();
+
+    @Query("SELECT o FROM MessageEntity o WHERE o.messageId IN (SELECT MAX(e.messageId) FROM MessageEntity e GROUP BY e.dialogId) ORDER BY o.messageId DESC")
     Page<MessageEntity> findLastMessagesInDialogs(Pageable pageable);
 
     @Query("SELECT o FROM MessageEntity o WHERE o.messageId IN (SELECT MAX(e.messageId) FROM MessageEntity e WHERE UPPER(e.body) LIKE UPPER(CONCAT('%',:search,'%')) GROUP BY e.dialogId) ORDER BY o.messageId DESC")
     Page<MessageEntity> findInDialogs(@Param("search") String search, Pageable pageable);
+
+    Stream<MessageEntity> findByDialogIdAndMessageIdIsNotNullOrderByDateDesc(int dialogId);
 
     Page<MessageEntity> findByDialogIdAndMessageIdIsNotNullOrderByDateDesc(int dialogId, Pageable pageable);
 

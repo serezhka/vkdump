@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Sergei Fedorov (serezhka@xakep.ru)
@@ -60,9 +63,21 @@ public class StaticPagesController {
         return "static-messages";
     }
 
+    @RequestMapping(value = "/photos", method = RequestMethod.GET)
+    public String getPhotos(@RequestParam(defaultValue = "1") int page,
+                            @RequestParam(required = false, defaultValue = "1000") int size,
+                            Model model, HttpServletResponse response) {
+        Page<AttachmentEntity> photos = attachmentService.getFilteredPhotos(new PageRequest(page - 1, size));
+        if (photos.getContent().isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+        model.addAttribute("attachments", photos);
+        return "static-photos";
+    }
+
     @RequestMapping(value = "/photos/{dialogId}", method = RequestMethod.GET)
     public String getPhotos(@RequestParam(defaultValue = "1") int page,
-                            @RequestParam(required = false, defaultValue = "100") int size,
+                            @RequestParam(required = false, defaultValue = "500") int size,
                             @PathVariable("dialogId") int dialogId,
                             Model model, HttpServletResponse response) {
         Page<AttachmentEntity> photos = attachmentService.getAttachments(dialogId, "photo", new PageRequest(page - 1, size));
@@ -72,5 +87,16 @@ public class StaticPagesController {
         model.addAttribute("attachments", photos);
         model.addAttribute("dialogId", dialogId);
         return "static-photos";
+    }
+
+    @Transactional
+    @RequestMapping(value = "/voices", method = RequestMethod.GET)
+    public String getVoices(Model model) {
+        List<AttachmentEntity> voices = attachmentService.getAttachments("doc")
+                .filter(attachment -> attachment.getType().equalsIgnoreCase("doc"))
+                .filter(attachment -> attachment.getDoc().getExt().equalsIgnoreCase("ogg"))
+                .collect(Collectors.toList());
+        model.addAttribute("attachments", voices);
+        return "static-voices";
     }
 }
